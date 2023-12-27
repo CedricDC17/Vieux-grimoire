@@ -1,31 +1,59 @@
 const express = require('express');
 const app = express();
-const bookRoutes = require('./routes/bookRoutes');
 const cors = require('./middlewares/cors');
 const Book = require('./models/book');
 
 app.use(cors);
 
-// Ajouter un livre
-app.post('/books', (req, res, next) => {
-    delete req.body._id;
-    const book = new Book({
-        ...req.body
-    });
-    book.save()
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
-        .catch(error => res.status(400).json({ error }));
+// Route GET pour récupérer tous les livres
+app.get('/api/books', async (req, res) => {
+    try {
+        const books = await Book.find();
+        res.json(books);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 });
 
-// Récupérer un livre spécifique
-app.get('/api/books/:id', (req, res, next) => {
-    Book.findOne({ _id: req.params.id })
-        .then(book => res.status(200).json(book))
-        .catch(error => res.status(404).json({ error }));
+// Route POST pour ajouter un nouveau livre
+app.post('/api/books', async (req, res) => {
+    try {
+        const book = new Book(req.body);
+        await book.save();
+        res.status(201).json(book);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 });
 
-// Récupérer tous les livres
-app.use('/api/books', bookRoutes);
+// Route GET pour récupérer un livre spécifique par ID
+app.get('/api/books/:id', async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        res.json(book);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
+// Route PUT pour mettre à jour un livre spécifique par ID
+app.put('/api/books/:id', async (req, res) => {
+    try {
+        const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(book);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Route DELETE pour supprimer un livre spécifique par ID
+app.delete('/api/books/:id', async (req, res) => {
+    try {
+        const book = await Book.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Book deleted' });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
 module.exports = app;
