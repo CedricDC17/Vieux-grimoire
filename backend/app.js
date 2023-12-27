@@ -2,8 +2,21 @@ const express = require('express');
 const app = express();
 const cors = require('./middlewares/cors');
 const Book = require('./models/book');
+const User = require('./models/user');
 
 app.use(cors);
+
+// Inscription
+app.post('/api/auth/signup', async (req, res) => {
+    try {
+      const user = new User(req.body);
+      await user.save();
+      res.status(201).json({ message: 'User created!' });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+    console.log(req.body);
+  });
 
 // Route GET pour récupérer tous les livres
 app.get('/api/books', async (req, res) => {
