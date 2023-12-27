@@ -1,20 +1,31 @@
 const express = require('express');
-const Book = require('./models/book');
-const authController = require('./authController');
-const corsMiddleware = require('./middleware/cors'); // Middleware CORS dans un fichier séparé
-
 const app = express();
+const bookRoutes = require('./routes/bookRoutes');
+const cors = require('./middlewares/cors');
+const Book = require('./models/book');
 
-// Middleware CORS et parsing JSON
-app.use(corsMiddleware);
-app.use(express.json());
+app.use(cors);
 
-// Routes pour les livres
-const bookRoutes = require('./routes/bookRoutes'); // Supposant que vous avez un fichier séparé pour les routes des livres
+// Ajouter un livre
+app.post('/books', (req, res, next) => {
+    delete req.body._id;
+    const book = new Book({
+        ...req.body
+    });
+    book.save()
+        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+        .catch(error => res.status(400).json({ error }));
+});
+
+// Récupérer un livre spécifique
+app.get('/api/books/:id', (req, res, next) => {
+    Book.findOne({ _id: req.params.id })
+        .then(book => res.status(200).json(book))
+        .catch(error => res.status(404).json({ error }));
+});
+
+// Récupérer tous les livres
 app.use('/api/books', bookRoutes);
 
-// Routes pour l'authentification
-app.use('/api/auth', authController);
 
-// Export app
 module.exports = app;

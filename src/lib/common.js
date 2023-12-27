@@ -41,6 +41,7 @@ export async function getBooks() {
       url: `${API_ROUTES.BOOKS}`,
     });
     console.log(API_ROUTES.BOOKS);
+    console.log(response.data);
     // eslint-disable-next-line array-callback-return
     const books = formatBooks(response.data);
     return books;

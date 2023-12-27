@@ -3,8 +3,11 @@ const mongoose = require('mongoose');
 const app = require('./app');
 
 // Connexion à MongoDB
-mongoose.connect('mongodb+srv://user1:user1@grimoire.bp122n4.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://user1:user1@grimoire.bp122n4.mongodb.net/test?retryWrites=true&w=majority');
 const db = mongoose.connection;
+
+// Création du serveur
+const server = http.createServer(app);
 
 // Gestion des erreurs de connexion à MongoDB
 db.on('error', console.error.bind(console, 'Erreur de connexion à MongoDB :'));
@@ -48,9 +51,6 @@ const errorHandler = error => {
             throw error;
     }
 };
-
-// Création du serveur
-const server = http.createServer(app);
 
 // Gestion des erreurs et affichage de l'adresse d'écoute
 server.on('error', errorHandler);

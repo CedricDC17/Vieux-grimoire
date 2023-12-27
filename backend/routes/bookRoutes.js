@@ -14,14 +14,14 @@ router.post('/', (req, res, next) => {
 });
 
 // Récupérer un livre par id
-router.get('/:id', (req, res, next) => {
+router.get('/api/books/:id', (req, res, next) => {
     Book.findOne({ _id: req.params.id })
         .then(book => res.status(200).json(book))
         .catch(error => res.status(404).json({ error }));
 });
 
 // Récupérer tous les livres
-router.get('/', (req, res, next) => {
+router.get('/api/books', (req, res, next) => {
     Book.find()
         .then(books => res.status(200).json(books))
         .catch(error => res.status(400).json({ error }));
