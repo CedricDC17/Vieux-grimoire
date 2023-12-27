@@ -1,9 +1,10 @@
+require('dotenv').config();
 const http = require('http');
 const mongoose = require('mongoose');
 const app = require('./app');
 
 // Connexion à MongoDB
-mongoose.connect('mongodb+srv://user1:user1@grimoire.bp122n4.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(process.env.MONGODB_URI);
 const db = mongoose.connection;
 
 // Création du serveur
