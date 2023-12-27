@@ -1,5 +1,7 @@
 const express = require('express');
 const Thing = require('./models/thing');
+const authController = require('./authController
+');
 
 const app = express();
 
@@ -47,6 +49,8 @@ app.get('/api/stuff/:id', (req, res, next) => {
         .then(thing => res.status(200).json(thing))
         .catch(error => res.status(404).json({ error }));
 });
+
+app.get('/api/auth', authController.get);
 
 // Export app
 module.exports = app;
