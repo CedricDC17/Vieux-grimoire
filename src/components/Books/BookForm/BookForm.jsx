@@ -44,6 +44,7 @@ function BookForm({ book, validate }) {
   }, [formState]);
 
   const onSubmit = async (data) => {
+    console.log('Form data:', data);
     // When we create a new book
     if (!book) {
       if (!data.file[0]) {
