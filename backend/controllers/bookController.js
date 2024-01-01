@@ -71,6 +71,7 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     Book.findOne({ _id: req.params.id })
         .then((book) => {
+            console.log(req.auth.userId);
             if (book.userId != req.auth.userId) {
                 res.status(401).json({ message: "Non autorisé" });
             } else {

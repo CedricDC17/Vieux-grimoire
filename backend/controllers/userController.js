@@ -31,7 +31,7 @@ const login = async (req, res) => {
                        userId: user._id,
                        token: jwt.sign(
                            { userId: user._id },
-                           'RANDOM_TOKEN_SECRET',
+                           process.env.JWT_TOKEN_SECRET,
                            { expiresIn: '24h' }
                        )
                    });
