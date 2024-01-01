@@ -94,8 +94,6 @@ const getTopRatedBooks = async (req, res) => {
     try {
         const books = await Book.find().sort({ rating: -1 }).limit(3);
         res.json(books);
-        console.log(books);
-        console.log(res.json(books));
     } catch (error) {
         res.status(500).send(error);
     }

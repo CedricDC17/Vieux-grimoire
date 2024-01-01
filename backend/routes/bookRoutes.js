@@ -4,7 +4,7 @@ const BookController = require('../controllers/bookController');
 const auth = require('../middlewares/auth');
 const multer = require('../middlewares/multer-config');
 const { upload, convertToWebP } = require("../middlewares/multer-config");
- 
+
 router.get('/', BookController.getAllBooks);
 router.post('/', auth, upload, convertToWebP, BookController.addBook);
 router.get('/bestrating', BookController.getTopRatedBooks);
