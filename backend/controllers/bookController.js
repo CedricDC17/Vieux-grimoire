@@ -71,6 +71,7 @@ const updateBook = async (req, res) => {
 const deleteBook = async (req, res) => {
     Book.findOne({ _id: req.params.id })
         .then((book) => {
+            console.log(req.auth.userId);
             if (book.userId != req.auth.userId) {
                 res.status(401).json({ message: "Non autorisé" });
             } else {
@@ -93,8 +94,6 @@ const getTopRatedBooks = async (req, res) => {
     try {
         const books = await Book.find().sort({ rating: -1 }).limit(3);
         res.json(books);
-        console.log(books);
-        console.log(res.json(books));
     } catch (error) {
         res.status(500).send(error);
     }
