@@ -33,6 +33,7 @@ const addBook = async (req, res) => {
 const getBookById = async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
+        console.log(book);
         res.json(book);
     } catch (error) {
         res.status(500).send(error);
@@ -92,7 +93,8 @@ const deleteBook = async (req, res) => {
 
 const getTopRatedBooks = async (req, res) => {
     try {
-        const books = await Book.find().sort({ rating: -1 }).limit(3);
+        const books = await Book.find().sort({ averageRating: -1 }).limit(3);
+        console.log(books);
         res.json(books);
     } catch (error) {
         res.status(500).send(error);
@@ -101,30 +103,34 @@ const getTopRatedBooks = async (req, res) => {
 
 const rateBook = async (req, res) => {
     try {
-        const bookId = req.params.id;
-        const { userId, rating } = req.body;
+        const book = await Book.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+                $push: {
+                    ratings: {
+                        userId: req.body.userId,
+                        rating: req.body.rating,
+                        grade: req.body.rating,
+                    },
+                },
+            },
+            { new: true }
+        );
+        const ratingLength = book.ratings.length;
+        const totalRating = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
+        let newAverageRating = ratingLength > 0 ? totalRating / ratingLength : 0;
+        newAverageRating = parseFloat(newAverageRating.toFixed(2));
 
-        if (rating < 0 || rating > 5) {
-            return res.status(400).json({ message: 'Rating must be between 0 and 5.' });
-        }
-
-        const book = await Book.findById(bookId);
-        if (!book) {
-            return res.status(404).json({ message: 'Book not found.' });
-        }
-
-        const existingRating = book.ratings.find(r => r.userId === userId);
-        if (existingRating) {
-            return res.status(400).json({ message: 'User has already rated this book.' });
-        }
-
-        book.ratings.push({ userId, rating });
-        book.averageRating = book.ratings.reduce((acc, curr) => acc + curr.rating, 0) / book.ratings.length;
+        console.log("average rating before:", book.averageRating);
+        book.averageRating = newAverageRating;
+        console.log("average rating after:", book.averageRating);
 
         await book.save();
-        res.status(200).json(book);
+        Book.findOne({ _id: req.params.id }).then((book) => res.status(200).json(book));
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        return res.status(500).json({ error: error.message });
     }
 };
 

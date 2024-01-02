@@ -9,7 +9,7 @@ router.get('/', BookController.getAllBooks);
 router.post('/', auth, upload, convertToWebP, BookController.addBook);
 router.get('/bestrating', BookController.getTopRatedBooks);
 router.get('/:id', BookController.getBookById);
-router.put('/:id/rating', BookController.rateBook);
+router.post('/:id/rating', auth, BookController.rateBook);
 router.put('/:id', auth, upload, convertToWebP, BookController.updateBook);
 router.delete('/:id', auth, BookController.deleteBook);
 
