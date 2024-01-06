@@ -30,14 +30,16 @@ exports.convertToWebP = (req, res, next) => {
           req.file.destination = "webp-images";
           req.file.filename = fileName + ".webp";
         }
-        fs.unlink(filePath, unlinkErr => {
-          if (unlinkErr) {
-            console.error('Error deleting original image file:', unlinkErr);
-          }
-          next();
-        });
+        // Delay the deletion of the original file by 1 second
+        setTimeout(() => {
+          fs.unlink(filePath, unlinkErr => {
+            if (unlinkErr) {
+              console.error('Error deleting original image file:', unlinkErr);
+            }
+            next();
+          });
+        }, 1000);
       });
-
   } else {
     next();
   }
