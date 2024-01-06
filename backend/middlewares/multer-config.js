@@ -24,15 +24,20 @@ exports.convertToWebP = (req, res, next) => {
       .webp({ quality: 20 })
       .toFile(webpFilePath, (err, info) => {
         if (err) {
-          fs.unlinkSync(filePath);
-          return next(err);
+          console.error('Error converting image to WebP:', err);
+        } else {
+          req.file.path = webpFilePath;
+          req.file.destination = "webp-images";
+          req.file.filename = fileName + ".webp";
         }
-        req.file.path = webpFilePath;
-        req.file.destination = "webp-images";
-        req.file.filename = fileName + ".webp";
-        fs.unlinkSync(filePath);
-        next();
+        fs.unlink(filePath, unlinkErr => {
+          if (unlinkErr) {
+            console.error('Error deleting original image file:', unlinkErr);
+          }
+          next();
+        });
       });
+
   } else {
     next();
   }
