@@ -30,7 +30,6 @@ exports.convertToWebP = (req, res, next) => {
           req.file.destination = "webp-images";
           req.file.filename = fileName + ".webp";
         }
-        // Delay the deletion of the original file by 1 second
         setTimeout(() => {
           fs.unlink(filePath, unlinkErr => {
             if (unlinkErr) {
