@@ -93,7 +93,6 @@ const deleteBook = async (req, res) => {
 const getTopRatedBooks = async (req, res) => {
     try {
         const books = await Book.find().sort({ averageRating: -1 }).limit(3);
-        console.log(books);
         res.json(books);
     } catch (error) {
         res.status(500).send(error);
