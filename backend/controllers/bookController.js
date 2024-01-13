@@ -14,7 +14,6 @@ const addBook = async (req, res) => {
     const bookObject = JSON.parse(req.body.book);
     delete bookObject._id;
     delete bookObject._userId;
-    req.file.path = req.file.path.replace("\\", "/");
     const book = new Book({
         ...bookObject,
         userId: req.auth.userId,
