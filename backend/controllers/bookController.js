@@ -133,8 +133,6 @@ const rateBook = async (req, res) => {
     }
 };
 
-
-
 module.exports = {
     getAllBooks,
     addBook,
